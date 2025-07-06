@@ -16,7 +16,7 @@ async def index(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
 # ランキングAPI
-@app.get('/api/rank', response_class=PlainTextResponse)
+@app.get('/api/rank', response_class=HTMLResponse)
 async def rank(q1: int = 0, q2: int = 0, q3: int = 0):
     user = np.array([q1, q2, q3])
     company_data = [
@@ -27,12 +27,22 @@ async def rank(q1: int = 0, q2: int = 0, q3: int = 0):
 
     def score(u, v): return 1 / (1 + np.linalg.norm(u - v))
 
-    result = ''
     for c in company_data:
-        s = round(score(user, c['Vector']), 3)
-        result += f"{c['Company']}: {s}（{c['Value']}）<br>"
+        c['Score'] = round(score(user, c['Vector']), 3)
 
-    return result
+    # スコア順でソート
+    sorted_data = sorted(company_data, key=lambda x: x['Score'], reverse=True)
+
+    # HTMLテーブルを生成
+    html = '<table border="1" cellspacing="0" cellpadding="6">'
+    html += '<tr><th>企業名</th><th>価値観</th><th>スコア</th><th>リンク</th></tr>'
+
+    for c in sorted_data:
+        html += f"<tr><td>{c['Company']}</td><td>{c['Value']}</td><td>{c['Score']}</td><td><a href='{c['URL']}' target='_blank'>🔗</a></td></tr>"
+
+    html += '</table>'
+    return html
+    
 
 if __name__ == '__main__':
     import uvicorn
