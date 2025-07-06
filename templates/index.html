@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>価値観マッチング</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <h1>🧭 価値観マッチング</h1>
+  <p>あなたに合う企業を見つけましょう</p>
+
+  <form id="preference-form">
+    <label>① 自由な裁量 ←→ 明確なルール</label><br>
+    <input type="range" name="q1" min="-2" max="2" value="0"><br><br>
+
+    <label>② 静かな環境 ←→ 活気ある環境</label><br>
+    <input type="range" name="q2" min="-2" max="2" value="0"><br><br>
+
+    <label>③ 本質重視 ←→ スピード重視</label><br>
+    <input type="range" name="q3" min="-2" max="2" value="0"><br><br>
+
+    <button type="submit">ランキングを見る</button>
+  </form>
+
+  <div id="result"></div>
+
+  <script>
+    document.getElementById('preference-form').onsubmit = async function (e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+      const query = new URLSearchParams(formData).toString();
+
+      const res = await fetch(`/api/rank?${query}`);
+      const data = await res.text();
+      document.getElementById('result').innerHTML = data;
+    };
+  </script>
+</body>
+</html>
