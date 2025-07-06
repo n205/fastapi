@@ -53,3 +53,7 @@ th, td {
 th {
     background-color: #f2f2f2;
 }
+
+#result {
+  margin-bottom: 32px;  /* お好みで調整可能 */
+}
