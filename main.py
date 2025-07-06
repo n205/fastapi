@@ -34,3 +34,7 @@ async def rank(q1: int = 0, q2: int = 0, q3: int = 0):
 
     return result
 
+if __name__ == '__main__':
+    import uvicorn
+    uvicorn.run(app, host='0.0.0.0', port=8080)
+
