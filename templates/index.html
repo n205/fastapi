@@ -19,21 +19,32 @@
     <label>③ 本質重視 ←→ スピード重視</label><br>
     <input type="range" name="q3" min="-2" max="2" value="0"><br><br>
 
-    <button type="submit">ランキングを見る</button>
+    <!-- ボタンはオプションで残す（使わないなら削除してもOK） -->
+    <button type="submit" style="display: none;">ランキングを見る</button>
   </form>
 
   <div id="result"></div>
 
   <script>
-    document.getElementById('preference-form').onsubmit = async function (e) {
-      e.preventDefault();
-      const formData = new FormData(this);
+    const form = document.getElementById('preference-form');
+    const sliders = form.querySelectorAll('input[type="range"]');
+
+    async function updateRanking() {
+      const formData = new FormData(form);
       const query = new URLSearchParams(formData).toString();
 
       const res = await fetch(`/api/rank?${query}`);
       const data = await res.text();
       document.getElementById('result').innerHTML = data;
-    };
+    }
+
+    // 各スライダーにイベントを追加
+    sliders.forEach(slider => {
+      slider.addEventListener('input', updateRanking);
+    });
+
+    // 初回ロード時にもランキング表示
+    window.addEventListener('DOMContentLoaded', updateRanking);
   </script>
 </body>
 </html>
