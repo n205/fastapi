@@ -9,6 +9,8 @@
   <h1>🧭 価値観マッチング</h1>
   <p>あなたに合う企業を見つけましょう</p>
 
+  <div id="result"></div> <!-- ランキングを先に表示 -->
+
   <form id="preference-form">
     <label>① 自由な裁量 ←→ 明確なルール</label><br>
     <input type="range" name="q1" min="-2" max="2" value="0"><br><br>
@@ -18,33 +20,29 @@
 
     <label>③ 本質重視 ←→ スピード重視</label><br>
     <input type="range" name="q3" min="-2" max="2" value="0"><br><br>
-
-    <!-- ボタンはオプションで残す（使わないなら削除してもOK） -->
-    <button type="submit" style="display: none;">ランキングを見る</button>
   </form>
-
-  <div id="result"></div>
 
   <script>
     const form = document.getElementById('preference-form');
-    const sliders = form.querySelectorAll('input[type="range"]');
+    const resultDiv = document.getElementById('result');
 
-    async function updateRanking() {
+    // ランキング取得関数
+    async function fetchRanking() {
       const formData = new FormData(form);
       const query = new URLSearchParams(formData).toString();
 
       const res = await fetch(`/api/rank?${query}`);
       const data = await res.text();
-      document.getElementById('result').innerHTML = data;
+      resultDiv.innerHTML = data;
     }
 
-    // 各スライダーにイベントを追加
-    sliders.forEach(slider => {
-      slider.addEventListener('input', updateRanking);
-    });
+    // 初期表示
+    window.onload = fetchRanking;
 
-    // 初回ロード時にもランキング表示
-    window.addEventListener('DOMContentLoaded', updateRanking);
+    // スライダー変更ごとに即時ランキング更新
+    form.querySelectorAll('input[type="range"]').forEach(input => {
+      input.addEventListener('input', fetchRanking);
+    });
   </script>
 </body>
 </html>
