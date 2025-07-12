@@ -43,13 +43,23 @@ table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 1rem;
+    table-layout: fixed;  /* 列幅を固定比率にする */
 }
 
 th, td {
     border: 1px solid #ddd;
     padding: 0.75rem;
     text-align: left;
+    height: 60px;                 /* 固定の行高 */
+    overflow: hidden;
+    text-overflow: ellipsis;     /* 入りきらない部分を省略（...） */
+    white-space: nowrap;         /* 折り返しを防止 */
 }
+
+th:nth-child(1), td:nth-child(1) { width: 20%; }
+th:nth-child(2), td:nth-child(2) { width: 70%; }
+th:nth-child(3), td:nth-child(3) { width: 5%; }
+th:nth-child(4), td:nth-child(4) { width: 5%; }
 
 th {
     background-color: #f2f2f2;
