@@ -64,8 +64,8 @@ th {
     background-color: #f2f2f2;
 }
 
-/* 3行まで折り返し、超えたら省略（...） */
-td {
+/* 2列目のtd（＝価値観）だけ3行折り返し＆省略 */
+td:nth-child(2) {
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 3;
