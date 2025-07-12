@@ -16,21 +16,29 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
 
+# キャッシュ（IPごとに保存）
+ip_cache = {}
+
 async def get_location_from_ip(ip: str):
+    if ip in ip_cache:
+        return ip_cache[ip]
+
     try:
         async with httpx.AsyncClient() as client:
-            url = f'https://ipapi.co/{ip}/json/'
+            url = f'https://ipinfo.io/{ip}/json'
             response = await client.get(url, timeout=5)
             data = response.json()
-            return {
+            result = {
                 'ip': ip,
                 'city': data.get('city', ''),
                 'region': data.get('region', ''),
-                'country': data.get('country_name', ''),
+                'country': data.get('country', ''),  # ISOコード（例: JP）
                 'org': data.get('org', ''),
             }
+            ip_cache[ip] = result  # キャッシュ保存
+            return result
     except Exception as e:
-        return {'error': str(e)}
+        return {'ip': ip, 'error': str(e)}
         
 # Google SheetsからPVQデータを取得する関数
 def load_company_data():
