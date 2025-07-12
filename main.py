@@ -72,7 +72,17 @@ def load_company_data():
 
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    ip = request.client.host or '8.8.8.8'  # テスト時は固定IPでもOK
+    location = await get_location_from_ip(ip)
+    print(f"📍 アクセス元: {location}")
+
+    # 必要に応じて地域を利用
+    user_region = location.get('region', '不明地域')
+
+    return templates.TemplateResponse("index.html", {
+        'request': request,
+        'user_region': user_region
+    })
 
 @app.get("/api/rank", response_class=HTMLResponse)
 async def rank(q1: int = 4, q2: int = 4, q3: int = 4):
