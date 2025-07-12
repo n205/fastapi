@@ -3,48 +3,79 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import numpy as np
+import pandas as pd
+import gspread
+from google.oauth2 import service_account
+from gspread_dataframe import get_as_dataframe
+import logging
 
 app = FastAPI()
-
-# Staticファイルとテンプレート設定
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
-# トップページ
+# Google SheetsからPVQデータを取得する関数
+def load_company_data():
+    SPREADSHEET_ID = '18Sb4CcAE5JPFeufHG97tLZz9Uj_TvSGklVQQhoFF28w'
+    WORKSHEET_NAME = 'バリュー抽出'
+
+    try:
+        creds = service_account.Credentials.from_service_account_file(
+            '/secrets/service-account-json',
+            scopes=[
+                'https://www.googleapis.com/auth/spreadsheets',
+                'https://www.googleapis.com/auth/drive'
+            ]
+        )
+        gc = gspread.authorize(creds)
+        sh = gc.open_by_key(SPREADSHEET_ID)
+        worksheet = sh.worksheet(WORKSHEET_NAME)
+        df = get_as_dataframe(worksheet)
+        df.fillna('', inplace=True)
+
+        df = df[
+            (df['会社名G'] != '') &
+            (df['会社名G'] != '対象外') &
+            (df['PVQ_自己方向性'] != '') &
+            (df['PVQ_安全'] != '') &
+            (df['PVQ_普遍主義'] != '')
+        ]
+
+        df['PVQ_自己方向性'] = pd.to_numeric(df['PVQ_自己方向性'], errors='coerce')
+        df['PVQ_安全'] = pd.to_numeric(df['PVQ_安全'], errors='coerce')
+        df['PVQ_普遍主義'] = pd.to_numeric(df['PVQ_普遍主義'], errors='coerce')
+        df = df.dropna(subset=['PVQ_自己方向性', 'PVQ_安全', 'PVQ_普遍主義'])
+
+        return df
+
+    except Exception as e:
+        logging.error('❌ スプレッドシート読み込み失敗:', exc_info=True)
+        return pd.DataFrame()  # 空のDataFrameを返す
+
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
-# ランキングAPI
-@app.get('/api/rank', response_class=HTMLResponse)
+@app.get("/api/rank", response_class=HTMLResponse)
 async def rank(q1: int = 4, q2: int = 4, q3: int = 4):
-    # ユーザー入力（1〜7）
-    user = np.array([q1, q2, q3])
+    user_vector = np.array([q1, q2, q3])
+    df = load_company_data()
+    if df.empty:
+        return HTMLResponse('<p>データ取得に失敗しました</p>', status_code=500)
 
-    # ダミーの企業データ（1〜7スケール）
-    company_data = [
-        {'Company': 'A社', 'Value': '自己方向性・安全志向', 'Vector': np.array([6, 7, 2]), 'URL': 'https://example.com/a'},
-        {'Company': 'B社', 'Value': '普遍主義・安全志向', 'Vector': np.array([3, 6, 6]), 'URL': 'https://example.com/b'},
-        {'Company': 'C社', 'Value': '自由・変化志向', 'Vector': np.array([7, 2, 1]), 'URL': 'https://example.com/c'},
-    ]
+    def compute_score(row):
+        vec = np.array([
+            row['PVQ_自己方向性'],
+            row['PVQ_安全'],
+            row['PVQ_普遍主義']
+        ])
+        return 1 / (1 + np.linalg.norm(user_vector - vec))
 
-    def score(u, v): return 1 / (1 + np.linalg.norm(u - v))
+    df['スコア'] = df.apply(compute_score, axis=1)
+    df = df.sort_values('スコア', ascending=False)
 
-    for c in company_data:
-        c['Score'] = round(score(user, c['Vector']), 3)
-
-    # スコア順でソート
-    sorted_data = sorted(company_data, key=lambda x: x['Score'], reverse=True)
-
-    # HTMLテーブルを生成
     html = '<table border="1" cellspacing="0" cellpadding="6">'
     html += '<tr><th>企業名</th><th>価値観</th><th>スコア</th><th>リンク</th></tr>'
-    for c in sorted_data:
-        html += f"<tr><td>{c['Company']}</td><td>{c['Value']}</td><td>{c['Score']}</td><td><a href='{c['URL']}' target='_blank'>🔗</a></td></tr>"
+    for _, row in df.iterrows():
+        html += f"<tr><td>{row['会社名G']}</td><td>{row['バリューT']}</td><td>{round(row['スコア'], 3)}</td><td><a href='{row['URL']}' target='_blank'>🔗</a></td></tr>"
     html += '</table>'
-
     return html
-
-if __name__ == '__main__':
-    import uvicorn
-    uvicorn.run(app, host='0.0.0.0', port=8080)
