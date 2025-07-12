@@ -110,7 +110,7 @@ async def rank(q1: int = 4, q2: int = 4, q3: int = 4):
     df = df.sort_values('スコア', ascending=False).head(3)
 
     html = '<table border="1" cellspacing="0" cellpadding="6">'
-    html += '<tr><th>会社名(リンク)</th><th>価値観</th><th>スコア</th></tr>'
+    html += '<tr><th>会社名 (リンク)</th><th>価値観</th><th>スコア</th></tr>'
     
     for _, row in df.iterrows():
         name_link = f"<a href='{row['URL']}' target='_blank'>{row['会社名G']}</a>"
