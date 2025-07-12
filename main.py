@@ -111,8 +111,17 @@ async def rank(q1: int = 4, q2: int = 4, q3: int = 4):
 
     html = '<table border="1" cellspacing="0" cellpadding="6">'
     html += '<tr><th>企業名</th><th>価値観</th><th>スコア</th><th>リンク</th></tr>'
+    
     for _, row in df.iterrows():
-        html += f"<tr><td>{row['会社名G']}</td><td>{row['バリューT']}</td><td>{round(row['スコア'], 3)}</td><td><a href='{row['URL']}' target='_blank'>🔗</a></td></tr>"
+        html += (
+            f"<tr>"
+            f"<td>{row['会社名G']}</td>"
+            f"<td><div class='clamp'>{row['バリューT']}</div></td>"
+            f"<td>{round(row['スコア'], 3)}</td>"
+            f"<td><a href='{row['URL']}' target='_blank'>🔗</a></td>"
+            f"</tr>"
+        )
+    
     html += '</table>'
     return html
 
