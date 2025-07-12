@@ -79,3 +79,7 @@ async def rank(q1: int = 4, q2: int = 4, q3: int = 4):
         html += f"<tr><td>{row['会社名G']}</td><td>{row['バリューT']}</td><td>{round(row['スコア'], 3)}</td><td><a href='{row['URL']}' target='_blank'>🔗</a></td></tr>"
     html += '</table>'
     return html
+
+if __name__ == '__main__':
+    import uvicorn
+    uvicorn.run(app, host='0.0.0.0', port=8080)
