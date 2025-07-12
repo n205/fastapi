@@ -71,7 +71,7 @@ async def rank(q1: int = 4, q2: int = 4, q3: int = 4):
         return 1 / (1 + np.linalg.norm(user_vector - vec))
 
     df['スコア'] = df.apply(compute_score, axis=1)
-    df = df.sort_values('スコア', ascending=False)
+    df = df.sort_values('スコア', ascending=False).head(3)
 
     html = '<table border="1" cellspacing="0" cellpadding="6">'
     html += '<tr><th>企業名</th><th>価値観</th><th>スコア</th><th>リンク</th></tr>'
