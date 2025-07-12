@@ -2,6 +2,8 @@ from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+import httpx
+
 import numpy as np
 import pandas as pd
 import gspread
@@ -13,6 +15,23 @@ app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
+
+async def get_location_from_ip(ip: str):
+    try:
+        async with httpx.AsyncClient() as client:
+            url = f'https://ipapi.co/{ip}/json/'
+            response = await client.get(url, timeout=5)
+            data = response.json()
+            return {
+                'ip': ip,
+                'city': data.get('city', ''),
+                'region': data.get('region', ''),
+                'country': data.get('country_name', ''),
+                'org': data.get('org', ''),
+            }
+    except Exception as e:
+        return {'error': str(e)}
+        
 # Google SheetsからPVQデータを取得する関数
 def load_company_data():
     SPREADSHEET_ID = '18Sb4CcAE5JPFeufHG97tLZz9Uj_TvSGklVQQhoFF28w'
