@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse, PlainTextResponse
+from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import numpy as np
@@ -17,12 +17,15 @@ async def index(request: Request):
 
 # ランキングAPI
 @app.get('/api/rank', response_class=HTMLResponse)
-async def rank(q1: int = 0, q2: int = 0, q3: int = 0):
+async def rank(q1: int = 4, q2: int = 4, q3: int = 4):
+    # ユーザー入力（1〜7）
     user = np.array([q1, q2, q3])
+
+    # ダミーの企業データ（1〜7スケール）
     company_data = [
-        {'Company': 'A社', 'Value': '本質と静けさを重視', 'Vector': np.array([-1, -2, -2]), 'URL': 'https://example.com/a'},
-        {'Company': 'B社', 'Value': 'スピードと活気', 'Vector': np.array([1, 2, 2]), 'URL': 'https://example.com/b'},
-        {'Company': 'C社', 'Value': 'バランス重視', 'Vector': np.array([0, 0, 0]), 'URL': 'https://example.com/c'},
+        {'Company': 'A社', 'Value': '自己方向性・安全志向', 'Vector': np.array([6, 7, 2]), 'URL': 'https://example.com/a'},
+        {'Company': 'B社', 'Value': '普遍主義・安全志向', 'Vector': np.array([3, 6, 6]), 'URL': 'https://example.com/b'},
+        {'Company': 'C社', 'Value': '自由・変化志向', 'Vector': np.array([7, 2, 1]), 'URL': 'https://example.com/c'},
     ]
 
     def score(u, v): return 1 / (1 + np.linalg.norm(u - v))
@@ -36,15 +39,12 @@ async def rank(q1: int = 0, q2: int = 0, q3: int = 0):
     # HTMLテーブルを生成
     html = '<table border="1" cellspacing="0" cellpadding="6">'
     html += '<tr><th>企業名</th><th>価値観</th><th>スコア</th><th>リンク</th></tr>'
-
     for c in sorted_data:
         html += f"<tr><td>{c['Company']}</td><td>{c['Value']}</td><td>{c['Score']}</td><td><a href='{c['URL']}' target='_blank'>🔗</a></td></tr>"
-
     html += '</table>'
+
     return html
-    
 
 if __name__ == '__main__':
     import uvicorn
     uvicorn.run(app, host='0.0.0.0', port=8080)
-
