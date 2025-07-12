@@ -1,5 +1,11 @@
 numpy
+pandas
+
+oauth2client
 
 fastapi
 uvicorn[standard]
 jinja2
+
+gspread
+
