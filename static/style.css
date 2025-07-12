@@ -64,6 +64,14 @@ th {
     background-color: #f2f2f2;
 }
 
+/* 3行まで折り返し、超えたら省略（...） */
+td {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    white-space: normal;
+}
+
 #result {
   margin-bottom: 50px;
 }
