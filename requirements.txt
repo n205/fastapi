@@ -3,6 +3,8 @@ pandas
 
 oauth2client
 
+httpx
+
 fastapi
 uvicorn[standard]
 jinja2
