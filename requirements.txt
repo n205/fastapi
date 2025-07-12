@@ -8,4 +8,6 @@ uvicorn[standard]
 jinja2
 
 gspread
+gspread-dataframe
+google-auth
 
