@@ -52,6 +52,7 @@ th {
     text-align: left;
     font-weight: bold;
     white-space: nowrap; /* ヘッダーは折り返さず1行に */
+    border: 1px solid #ddd;
 }
 
 td {
@@ -61,6 +62,7 @@ td {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: normal;
+    border: 1px solid #ddd;
 }
 
 th:nth-child(1), td:nth-child(1) { width: 20%; }
