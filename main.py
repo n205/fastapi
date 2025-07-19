@@ -112,12 +112,19 @@ async def rank(q1: int = 4, q2: int = 4, q3: int = 4):
 
     html = '<table border="1" cellspacing="0" cellpadding="6">'
     html += (
+        '<thead>'
         '<tr>'
-        '<th>会社名 (リンク)</th>'
+        '<th rowspan="2">会社名 (リンク)</th>'
         '<th colspan="2">色傾向</th>'
-        '<th>価値観</th>'
-        '<th>スコア</th>'
+        '<th rowspan="2">価値観</th>'
+        '<th rowspan="2">スコア</th>'
         '</tr>'
+        '<tr>'
+        '<th>色1</th>'
+        '<th>色2</th>'
+        '</tr>'
+        '</thead>'
+        '<tbody>'
     )
     
     for _, row in df.iterrows():
@@ -132,7 +139,8 @@ async def rank(q1: int = 4, q2: int = 4, q3: int = 4):
             f"</tr>"
         )
     
-    html += '</table>'
+    html += '</tbody></table>'
+
     return html
 
 if __name__ == '__main__':
