@@ -47,6 +47,7 @@ table {
 }
 
 th {
+    padding: 0rem;
     background-color: #f2f2f2;
     text-align: center;
     font-weight: bold;
