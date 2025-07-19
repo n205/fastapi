@@ -121,6 +121,10 @@ th:nth-child(4), td:nth-child(4) { width: 8%; }
   font-size: 0.9rem;
 }
 
+.question-block {
+  margin-bottom: 1.5rem;
+}
+
 #result {
   margin-bottom: 50px;
 }
