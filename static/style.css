@@ -65,15 +65,16 @@ td {
     border: 1px solid #ddd;
 }
 
+td.color-cell {
+    padding: 0;
+    height: 60px;
+    border: 1px solid #ddd;
+}
+
 th:nth-child(1), td:nth-child(1) { width: 20%; }
 th:nth-child(2), td:nth-child(2) { width: 7%; }
 th:nth-child(3), td:nth-child(3) { width: 65%; }
 th:nth-child(4), td:nth-child(4) { width: 8%; }
-
-td.color-cell {
-    padding: 0;
-    height: 60px;
-}
 
 /* 価値観（バリュー）に3行まで表示＋省略を適用 */
 .clamp {
@@ -91,13 +92,6 @@ td.color-cell {
     margin: 0;
     padding: 0;
     border: none;
-}
-
-.half-color {
-    flex: 1;
-    height: 100%;
-    margin: 0;
-    padding: 0;
 }
 
 #result {
