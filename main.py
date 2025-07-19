@@ -127,8 +127,8 @@ async def rank(q1: int = 4, q2: int = 4, q3: int = 4):
         name_link = f"<a href='{row['URL']}' target='_blank'>{row['会社名G']}</a>"
         color_block = (
             f"<div class='color-block'>"
-            f"<div class='half-color' style='background-color: {row['色1コード']};'></div>"
-            f"<div class='half-color' style='background-color: {row['色2コード']};'></div>"
+            f"<td class='color-cell' style='background-color: {row['色1コード']};'></td>"
+            f"<td class='color-cell' style='background-color: {row['色2コード']};'></td>"
             f"</div>"
         )
         html += (
