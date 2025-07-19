@@ -134,7 +134,7 @@ async def rank(q1: int = 4, q2: int = 4, q3: int = 4):
         html += (
             f"<tr>"
             f"<td>{name_link}</td>"
-            f"<td>{color_block}</td>"  # 1つの <td> の中に色ブロック
+            f"<td class='color-column'>{color_block}</td>"  # ← ここを修正
             f"<td><div class='clamp'>{row['バリューT']}</div></td>"
             f"<td>{round(row['スコア'], 3)}</td>"
             f"</tr>"
