@@ -81,8 +81,8 @@ td.color-column {
 }
 
 th:nth-child(1), td:nth-child(1) { width: 20%; }
-th:nth-child(2), td:nth-child(2) { width: 7%; }
-th:nth-child(3), td:nth-child(3) { width: 65%; }
+th:nth-child(2), td:nth-child(2) { width: 6%; }
+th:nth-child(3), td:nth-child(3) { width: 66%; }
 th:nth-child(4), td:nth-child(4) { width: 8%; }
 
 /* 価値観（バリュー）に3行まで表示＋省略を適用 */
