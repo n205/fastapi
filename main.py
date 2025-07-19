@@ -114,14 +114,10 @@ async def rank(q1: int = 4, q2: int = 4, q3: int = 4):
     html += (
         '<thead>'
         '<tr>'
-        '<th rowspan="2">会社名 (リンク)</th>'
-        '<th colspan="2">色傾向</th>'
-        '<th rowspan="2">価値観</th>'
-        '<th rowspan="2">スコア</th>'
-        '</tr>'
-        '<tr>'
-        '<th>色1</th>'
-        '<th>色2</th>'
+        '<th>会社名 (リンク)</th>'
+        '<th>色傾向</th>'
+        '<th>価値観</th>'
+        '<th>スコア</th>'
         '</tr>'
         '</thead>'
         '<tbody>'
@@ -129,11 +125,16 @@ async def rank(q1: int = 4, q2: int = 4, q3: int = 4):
     
     for _, row in df.iterrows():
         name_link = f"<a href='{row['URL']}' target='_blank'>{row['会社名G']}</a>"
+        color_block = (
+            f"<div style='display: flex; height: 100%;'>"
+            f"<div style='flex: 1; background-color: {row['色1コード']};'></div>"
+            f"<div style='flex: 1; background-color: {row['色2コード']};'></div>"
+            f"</div>"
+        )
         html += (
             f"<tr>"
             f"<td>{name_link}</td>"
-            f"<td style='background-color: {row['色1コード']};'></td>"
-            f"<td style='background-color: {row['色2コード']};'></td>"
+            f"<td>{color_block}</td>"
             f"<td><div class='clamp'>{row['バリューT']}</div></td>"
             f"<td>{round(row['スコア'], 3)}</td>"
             f"</tr>"
