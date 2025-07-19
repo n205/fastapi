@@ -79,6 +79,22 @@ th:nth-child(4), td:nth-child(4) { width: 8%; }
     white-space: normal;
 }
 
+.color-block {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+
+.half-color {
+    flex: 1;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
 #result {
   margin-bottom: 50px;
 }
