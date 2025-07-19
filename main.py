@@ -15,8 +15,7 @@ app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
-
-# キャッシュ（IPごとに保存）
+# IPキャッシュ
 ip_cache = {}
 
 async def get_location_from_ip(ip: str):
@@ -32,15 +31,15 @@ async def get_location_from_ip(ip: str):
                 'ip': ip,
                 'city': data.get('city', ''),
                 'region': data.get('region', ''),
-                'country': data.get('country', ''),  # ISOコード（例: JP）
+                'country': data.get('country', ''),
                 'org': data.get('org', ''),
             }
-            ip_cache[ip] = result  # キャッシュ保存
+            ip_cache[ip] = result
             return result
     except Exception as e:
         return {'ip': ip, 'error': str(e)}
-        
-# Google SheetsからPVQデータを取得する関数
+
+# Google Sheetsからデータを取得
 def load_company_data():
     SPREADSHEET_ID = '18Sb4CcAE5JPFeufHG97tLZz9Uj_TvSGklVQQhoFF28w'
     WORKSHEET_NAME = 'バリュー抽出'
@@ -64,7 +63,9 @@ def load_company_data():
             (df['会社名G'] != '対象外') &
             (df['PVQ_自己方向性'] != '') &
             (df['PVQ_安全'] != '') &
-            (df['PVQ_普遍主義'] != '')
+            (df['PVQ_普遍主義'] != '') &
+            (df['色1コード'] != '') &
+            (df['色2コード'] != '')
         ]
 
         df['PVQ_自己方向性'] = pd.to_numeric(df['PVQ_自己方向性'], errors='coerce')
@@ -76,7 +77,7 @@ def load_company_data():
 
     except Exception as e:
         logging.error('❌ スプレッドシート読み込み失敗:', exc_info=True)
-        return pd.DataFrame()  # 空のDataFrameを返す
+        return pd.DataFrame()
 
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
@@ -110,18 +111,23 @@ async def rank(q1: int = 4, q2: int = 4, q3: int = 4):
     df = df.sort_values('スコア', ascending=False).head(3)
 
     html = '<table border="1" cellspacing="0" cellpadding="6">'
-    html += '<tr><th>会社名 (リンク)</th><th>価値観</th><th>スコア</th></tr>'
-    
+    html += '<tr><th>会社名 (リンク)</th><th>色1</th><th>色2</th><th>価値観</th><th>スコア</th></tr>'
+
     for _, row in df.iterrows():
         name_link = f"<a href='{row['URL']}' target='_blank'>{row['会社名G']}</a>"
+        color1_box = f"<div style='width:24px; height:24px; background-color:{row['色1コード']}; border:1px solid #000'></div>"
+        color2_box = f"<div style='width:24px; height:24px; background-color:{row['色2コード']}; border:1px solid #000'></div>"
+
         html += (
             f"<tr>"
             f"<td>{name_link}</td>"
+            f"<td>{color1_box}</td>"
+            f"<td>{color2_box}</td>"
             f"<td><div class='clamp'>{row['バリューT']}</div></td>"
             f"<td>{round(row['スコア'], 3)}</td>"
             f"</tr>"
         )
-    
+
     html += '</table>'
     return html
 
