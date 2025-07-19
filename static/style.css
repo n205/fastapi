@@ -54,6 +54,7 @@ th {
     white-space: nowrap; /* ヘッダーは折り返さず1行に */
     border: 1px solid #ddd;
     height: 30px;
+    box-sizing: border-box;
 }
 
 td {
