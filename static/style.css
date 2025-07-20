@@ -18,7 +18,8 @@ form {
 }
 
 label {
-    font-weight: bold;
+    #font-weight: bold;
+    margin-bottom: 10px; /* デフォルトより余白を多めに */
 }
 
 input[type="range"] {
