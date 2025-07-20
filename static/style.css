@@ -130,6 +130,11 @@ th:nth-child(4), td:nth-child(4) { width: 8%; }
   margin-bottom: 1.5rem;
 }
 
+.question-block label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
 #result {
   margin-bottom: 50px;
 }
