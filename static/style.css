@@ -132,7 +132,7 @@ th:nth-child(4), td:nth-child(4) { width: 8%; }
 
 .question-block label {
   display: block;
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
 }
 
 #result {
