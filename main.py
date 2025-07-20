@@ -59,8 +59,8 @@ def load_company_data():
         df.fillna('', inplace=True)
 
         df = df[
-            (df['会社名G'] != '') &
-            (df['会社名G'] != '対象外') &
+            (df['会社名'] != '') &
+            (df['会社名'] != '対象外') &
             (df['PVQ_自己方向性'] != '') &
             (df['PVQ_安全'] != '') &
             (df['PVQ_普遍主義'] != '') &
@@ -124,7 +124,7 @@ async def rank(q1: int = 4, q2: int = 4, q3: int = 4):
     )
     
     for _, row in df.iterrows():
-        name_link = f"<a href='{row['URL']}' target='_blank'>{row['会社名G']}</a>"
+        name_link = f"<a href='{row['URL']}' target='_blank'>{row['会社名']}</a>"
         color_block = (
             f"<div class='color-block'>"
             f"<div class='half' style='background-color: {row['色1コード']};'></div>"
