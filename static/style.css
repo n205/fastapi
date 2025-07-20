@@ -11,6 +11,10 @@ h1 {
     margin-bottom: 50px; /* デフォルトより余白を多めに */
 }
 
+h4 {
+    font-weight: normal;
+}
+
 form {
     display: flex;
     flex-direction: column;
