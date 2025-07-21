@@ -132,13 +132,12 @@ td.color-column {
     margin-bottom: 50px;
 }
 
-/* 列幅指定（PC用） */
-@media (min-width: 601px) {
-    th:nth-child(1), td:nth-child(1) { width: 20%; }
-    th:nth-child(2), td:nth-child(2) { width: 8%; }
-    th:nth-child(3), td:nth-child(3) { width: 64%; }
-    th:nth-child(4), td:nth-child(4) { width: 8%; }
-}
+
+th:nth-child(1), td:nth-child(1) { width: 20%; }
+th:nth-child(2), td:nth-child(2) { width: 8%; }
+th:nth-child(3), td:nth-child(3) { width: 64%; }
+th:nth-child(4), td:nth-child(4) { width: 8%; }
+
 
 /* スマートフォン向け調整 */
 @media (max-width: 600px) {
