@@ -110,7 +110,7 @@ async def rank(q1: int = 4, q2: int = 4, q3: int = 4):
     df['スコア'] = df.apply(compute_score, axis=1)
     df = df.sort_values('スコア', ascending=False).head(3)
 
-    html = '<table border="1" cellspacing="0" cellpadding="6">'
+    html = '<div class="table-wrapper"><table border="1" cellspacing="0" cellpadding="6">'
     html += (
         '<thead>'
         '<tr>'
@@ -140,7 +140,7 @@ async def rank(q1: int = 4, q2: int = 4, q3: int = 4):
             f"</tr>"
         )
     
-    html += '</tbody></table>'
+    html += '</tbody></table></div>'
 
     return html
 
