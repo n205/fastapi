@@ -110,8 +110,9 @@ async def rank(q1: int = 4, q2: int = 4, q3: int = 4):
     df['スコア'] = df.apply(compute_score, axis=1)
     df = df.sort_values('スコア', ascending=False).head(3)
 
-    html = '<div class="table-wrapper"><table border="1" cellspacing="0" cellpadding="6">'
-    html += (
+    # --- テーブルビュー HTML ---
+    table_html = '<div id="table-view" class="table-wrapper"><table>'
+    table_html += (
         '<thead>'
         '<tr>'
         '<th>会社名 (リンク)</th>'
@@ -122,7 +123,6 @@ async def rank(q1: int = 4, q2: int = 4, q3: int = 4):
         '</thead>'
         '<tbody>'
     )
-    
     for _, row in df.iterrows():
         name_link = f"<a href='{row['URL']}' target='_blank'>{row['会社名']}</a>"
         color_block = (
@@ -131,18 +131,38 @@ async def rank(q1: int = 4, q2: int = 4, q3: int = 4):
             f"<div class='half' style='background-color: {row['色2コード']};'></div>"
             f"</div>"
         )
-        html += (
+        table_html += (
             f"<tr>"
             f"<td>{name_link}</td>"
-            f"<td class='color-column'>{color_block}</td>"  
+            f"<td class='color-column'>{color_block}</td>"
             f"<td><div class='clamp'>{row['バリュー']}</div></td>"
             f"<td>{round(row['スコア'], 3)}</td>"
             f"</tr>"
         )
-    
-    html += '</tbody></table></div>'
+    table_html += '</tbody></table></div>'
 
-    return html
+    # --- カードビュー HTML ---
+    card_html = '<div id="card-view">'
+    for _, row in df.iterrows():
+        name_link = f"<a href='{row['URL']}' target='_blank'>{row['会社名']}</a>"
+        color_block = (
+            f"<div class='color-block'>"
+            f"<div class='half' style='background-color: {row['色1コード']};'></div>"
+            f"<div class='half' style='background-color: {row['色2コード']};'></div>"
+            f"</div>"
+        )
+        card_html += (
+            f"<div class='card'>"
+            f"<h3>{name_link}</h3>"
+            f"{color_block}"
+            f"<div class='value'>{row['バリュー']}</div>"
+            f"<div class='score'>スコア: {round(row['スコア'], 3)}</div>"
+            f"</div>"
+        )
+    card_html += '</div>'
+
+    # --- 両方返す ---
+    return HTMLResponse(table_html + card_html)
 
 if __name__ == '__main__':
     import uvicorn
