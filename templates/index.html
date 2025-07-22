@@ -26,7 +26,7 @@
         <span class="slider-label">とても似ている</span>
       </div>
     </div>
-  
+
     <div class="question-block">
       <label>この会社は、運営が安定していることや、状況が予測可能であること重視している</label>
       <div class="slider-container">
@@ -51,20 +51,43 @@
     const tableView = document.getElementById('table-view');
     const cardView = document.getElementById('card-view');
 
+    function isMobile() {
+      return window.innerWidth <= 768;
+    }
+
     async function fetchRanking() {
       const formData = new FormData(form);
       const query = new URLSearchParams(formData).toString();
 
-      const res = await fetch(`/api/rank?${query}`);
-      const htmlData = await res.text();
+      try {
+        const res = await fetch(`/api/rank?${query}`);
+        const htmlData = await res.text();
 
-      tableView.innerHTML = htmlData;
-      generateCardsFromTable(); // スマホ用カード生成
+        console.log("✅ データ取得成功");
+
+        tableView.innerHTML = htmlData;
+
+        if (isMobile()) {
+          generateCardsFromTable();
+          tableView.style.display = "none";
+          cardView.style.display = "block";
+        } else {
+          tableView.style.display = "block";
+          cardView.style.display = "none";
+        }
+      } catch (error) {
+        console.error("❌ fetch エラー:", error);
+        tableView.innerHTML = "<p>データ取得に失敗しました。</p>";
+        cardView.innerHTML = "";
+      }
     }
 
     function generateCardsFromTable() {
       const table = document.querySelector("#table-view table");
-      if (!table) return;
+      if (!table) {
+        cardView.innerHTML = "<p>表示できるデータがありません。</p>";
+        return;
+      }
 
       const rows = table.querySelectorAll("tbody tr");
       const cardsHtml = [];
@@ -73,7 +96,7 @@
         const cells = row.querySelectorAll("td");
         if (cells.length < 4) return;
 
-        const name = cells[0].innerText;
+        const name = cells[0].innerHTML; // innerHTML にしてリンクを含める
         const colorHTML = cells[1].innerHTML;
         const value = cells[2].innerText;
         const score = cells[3].innerText;
