@@ -10,7 +10,11 @@
   <h1>🧭 価値観マッチング：あなたに合う会社は？</h1>
   <h2>🧩 あなたに合いそうな会社ランキング（簡易）</h2>
 
-  <div id="result"></div> <!-- ランキングを先に表示 -->
+  <!-- PC表示用テーブル -->
+  <div id="table-view"></div>
+
+  <!-- スマホ表示用カード -->
+  <div id="card-view" style="display: none;"></div>
 
   <h4>以下の会社がどのくらい自分と似ているか、各項目ごとに回答してください</h4>
   <form id="preference-form">
@@ -36,7 +40,7 @@
       <label>この会社は、多様性、環境、人権、公平さなどを重視している</label>
       <div class="slider-container">
         <span class="slider-label">あまり似ていない</span>
-        <input type="range" name="q2" min="1" max="7" value="4">
+        <input type="range" name="q3" min="1" max="7" value="4">
         <span class="slider-label">とても似ている</span>
       </div>
     </div>
@@ -44,22 +48,51 @@
 
   <script>
     const form = document.getElementById('preference-form');
-    const resultDiv = document.getElementById('result');
+    const tableView = document.getElementById('table-view');
+    const cardView = document.getElementById('card-view');
 
-    // ランキング取得関数
     async function fetchRanking() {
       const formData = new FormData(form);
       const query = new URLSearchParams(formData).toString();
 
       const res = await fetch(`/api/rank?${query}`);
-      const data = await res.text();
-      resultDiv.innerHTML = data;
+      const htmlData = await res.text();
+
+      tableView.innerHTML = htmlData;
+      generateCardsFromTable(); // スマホ用カード生成
     }
 
-    // 初期表示
+    function generateCardsFromTable() {
+      const table = document.querySelector("#table-view table");
+      if (!table) return;
+
+      const rows = table.querySelectorAll("tbody tr");
+      const cardsHtml = [];
+
+      rows.forEach(row => {
+        const cells = row.querySelectorAll("td");
+        if (cells.length < 4) return;
+
+        const name = cells[0].innerText;
+        const colorHTML = cells[1].innerHTML;
+        const value = cells[2].innerText;
+        const score = cells[3].innerText;
+
+        cardsHtml.push(`
+          <div class="card">
+            <h3>${name}</h3>
+            <div class="color-block">${colorHTML}</div>
+            <p class="value">${value}</p>
+            <p class="score">スコア：<strong>${score}</strong></p>
+          </div>
+        `);
+      });
+
+      cardView.innerHTML = cardsHtml.join('');
+    }
+
     window.onload = fetchRanking;
 
-    // スライダー変更ごとに即時ランキング更新
     form.querySelectorAll('input[type="range"]').forEach(input => {
       input.addEventListener('input', fetchRanking);
     });
