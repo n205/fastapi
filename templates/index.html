@@ -102,12 +102,12 @@
         const cardId = `card-${index}`;
 
         cardsHtml.push(`
-          <div class="accordion-card">
-            <div class="accordion-header" onclick="toggleAccordion('${cardId}')">
+          <div class="accordion-card" id="accordion-${index}">
+            <div class="accordion-header" onclick="toggleAccordion(${index})">
               <h3>${name}</h3>
-              ${colorHTML}
+              <div class="color-block">${colorHTML}</div>
             </div>
-            <div class="accordion-body" id="${cardId}">
+            <div class="accordion-body card-detail" id="${cardId}">
               <p class="value">${value}</p>
               <p class="score">スコア：<strong>${score}</strong></p>
             </div>
@@ -118,9 +118,11 @@
       cardView.innerHTML = cardsHtml.join('');
     }
 
-    function toggleAccordion(id) {
-      const el = document.getElementById(id);
-      el.classList.toggle('open');
+    function toggleAccordion(index) {
+      const card = document.getElementById(`accordion-${index}`);
+      const detail = document.getElementById(`card-${index}`);
+      card.classList.toggle('open');
+      detail.classList.toggle('open');
     }
 
     window.onload = fetchRanking;
