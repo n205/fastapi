@@ -234,6 +234,7 @@ th:nth-child(4), td:nth-child(4) { width: 8%; }
     float: right;
     margin-right: 0.25rem;
     transition: transform 0.15s;
+    color: #696969;
 }
 
 .accordion-card.open::after {
