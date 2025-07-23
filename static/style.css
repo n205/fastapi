@@ -230,9 +230,9 @@ th:nth-child(4), td:nth-child(4) { width: 8%; }
 /* アコーディオン矢印の見た目 */
 .accordion-card::after {
     content: "▼";
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     float: right;
-    margin-right: 0.2rem;
+    margin-right: 0.25rem;
     transition: transform 0.15s;
 }
 
