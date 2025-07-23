@@ -229,7 +229,7 @@ th:nth-child(4), td:nth-child(4) { width: 8%; }
 
 /* アコーディオン矢印の見た目 */
 .accordion-card::after {
-    content: "▼";
+    content: "▿";
     float: right;
     transition: transform 0.3s;
 }
