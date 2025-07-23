@@ -92,26 +92,36 @@
       const rows = table.querySelectorAll("tbody tr");
       const cardsHtml = [];
 
-      rows.forEach(row => {
+      rows.forEach((row, index) => {
         const cells = row.querySelectorAll("td");
         if (cells.length < 4) return;
 
-        const name = cells[0].innerHTML; // innerHTML にしてリンクを含める
+        const name = cells[0].querySelector("a")?.outerHTML || cells[0].innerText;
         const colorHTML = cells[1].innerHTML;
         const value = cells[2].innerText;
         const score = cells[3].innerText;
 
+        const id = `card-detail-${index}`;
+
         cardsHtml.push(`
-          <div class="card">
+          <div class="card accordion-card" onclick="toggleDetail('${id}')">
             <h3>${name}</h3>
             <div class="color-block">${colorHTML}</div>
-            <p class="value">${value}</p>
             <p class="score">スコア：<strong>${score}</strong></p>
+            <div class="card-detail" id="${id}">
+              <p class="value">${value}</p>
+            </div>
           </div>
         `);
       });
 
       cardView.innerHTML = cardsHtml.join('');
+    }
+
+    function toggleDetail(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.style.display = el.style.display === "block" ? "none" : "block";
     }
 
     window.onload = fetchRanking;
