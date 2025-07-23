@@ -28,7 +28,7 @@
     </div>
 
     <div class="question-block">
-      <label>この会社は、運営が安定していることや、状況が予測可能であること重視している</label>
+      <label>この会社は、運営が安定していることや、状況が予測可能であることを重視している</label>
       <div class="slider-container">
         <span class="slider-label">あまり似ていない</span>
         <input type="range" name="q2" min="1" max="7" value="4">
@@ -95,7 +95,7 @@
         if (cells.length < 4) return;
 
         const name = cells[0].innerHTML;
-        const colorHTML = cells[1].innerHTML;
+        const colorHTML = cells[1].innerHTML; // 色HTMLをそのまま使う
         const value = cells[2].innerText;
         const score = cells[3].innerText;
 
@@ -104,8 +104,10 @@
         cardsHtml.push(`
           <div class="accordion-card" id="accordion-${index}">
             <div class="accordion-header" onclick="toggleAccordion(${index})">
-              <h3>${name}</h3>
-              ${colorHTML} <!-- ✅ ここを直接挿入 -->
+              <div class="accordion-header-top">
+                <h3>${name}</h3>
+                <div class="color-block-wrapper">${colorHTML}</div> <!-- ✅ 色を明示的にラップ -->
+              </div>
             </div>
             <div class="accordion-body card-detail" id="${cardId}">
               <p class="value">${value}</p>
