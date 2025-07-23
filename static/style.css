@@ -231,3 +231,20 @@ th:nth-child(4), td:nth-child(4) { width: 8%; }
         display: block;
     }
 }
+
+/* アコーディオン展開時の表示 */
+.card-detail.open {
+    display: block;
+}
+
+/* 矢印の見た目改善（オプション） */
+.accordion-card::after {
+    content: "▼";
+    float: right;
+    transition: transform 0.3s;
+}
+
+.accordion-card.open::after {
+    transform: rotate(180deg); /* 上向き矢印 */
+}
+
