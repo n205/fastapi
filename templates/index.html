@@ -105,7 +105,7 @@
           <div class="accordion-card" id="accordion-${index}">
             <div class="accordion-header" onclick="toggleAccordion(${index})">
               <h3>${name}</h3>
-              <div class="color-block">${colorHTML}</div>
+              ${colorHTML} <!-- ✅ ここを直接挿入 -->
             </div>
             <div class="accordion-body card-detail" id="${cardId}">
               <p class="value">${value}</p>
