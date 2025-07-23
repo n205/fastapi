@@ -232,8 +232,8 @@ th:nth-child(4), td:nth-child(4) { width: 8%; }
     content: "▼";
     font-size: 0.85rem;
     float: right;
-    margin-right: 0.5rem;
-    transition: transform 0.2s;
+    margin-right: 0.25rem;
+    transition: transform 0.15s;
 }
 
 .accordion-card.open::after {
