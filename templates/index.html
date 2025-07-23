@@ -63,8 +63,6 @@
         const res = await fetch(`/api/rank?${query}`);
         const htmlData = await res.text();
 
-        console.log("✅ データ取得成功");
-
         tableView.innerHTML = htmlData;
 
         if (isMobile()) {
@@ -96,20 +94,22 @@
         const cells = row.querySelectorAll("td");
         if (cells.length < 4) return;
 
-        const name = cells[0].querySelector("a")?.outerHTML || cells[0].innerText;
+        const name = cells[0].innerHTML;
         const colorHTML = cells[1].innerHTML;
         const value = cells[2].innerText;
         const score = cells[3].innerText;
 
-        const id = `card-detail-${index}`;
+        const cardId = `card-${index}`;
 
         cardsHtml.push(`
-          <div class="card accordion-card" onclick="toggleDetail('${id}')">
-            <h3>${name}</h3>
-            <div class="color-block">${colorHTML}</div>
-            <p class="score">スコア：<strong>${score}</strong></p>
-            <div class="card-detail" id="${id}">
+          <div class="accordion-card">
+            <div class="accordion-header" onclick="toggleAccordion('${cardId}')">
+              <h3>${name}</h3>
+              ${colorHTML}
+            </div>
+            <div class="accordion-body" id="${cardId}">
               <p class="value">${value}</p>
+              <p class="score">スコア：<strong>${score}</strong></p>
             </div>
           </div>
         `);
@@ -118,10 +118,9 @@
       cardView.innerHTML = cardsHtml.join('');
     }
 
-    function toggleDetail(id) {
+    function toggleAccordion(id) {
       const el = document.getElementById(id);
-      if (!el) return;
-      el.style.display = el.style.display === "block" ? "none" : "block";
+      el.classList.toggle('open');
     }
 
     window.onload = fetchRanking;
