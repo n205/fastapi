@@ -175,17 +175,67 @@ th:nth-child(4), td:nth-child(4) { width: 8%; }
     overflow: hidden;
 }
 
+/* ✅ アコーディオン形式カード用の追加スタイル */
 .accordion-card {
-  cursor: pointer;
-  transition: background 0.2s;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    cursor: pointer;
+    transition: background 0.2s;
 }
+
 .accordion-card:hover {
-  background-color: #f5f5f5;
+    background-color: #f5f5f5;
 }
+
+.accordion-header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.accordion-card h3 {
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+.color-block-wrapper {
+    display: flex;
+    gap: 4px;
+}
+
+.color-block-wrapper .color-block {
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    border: 1px solid #ccc;
+}
+
 .card-detail {
-  display: none;
-  margin-top: 0.5em;
-  color: #555;
+    display: none;
+    margin-top: 0.5em;
+    color: #555;
+}
+
+/* アコーディオン展開時の表示 */
+.card-detail.open {
+    display: block;
+}
+
+/* アコーディオン矢印の見た目 */
+.accordion-card::after {
+    content: "▼";
+    float: right;
+    transition: transform 0.3s;
+}
+
+.accordion-card.open::after {
+    transform: rotate(180deg); /* 上向き矢印 */
 }
 
 /* ---------- メディアクエリ ---------- */
@@ -222,7 +272,6 @@ th:nth-child(4), td:nth-child(4) { width: 8%; }
         padding: 0.5rem;
     }
 
-    /* テーブルを非表示、カードを表示 */
     #table-view {
         display: none;
     }
@@ -231,20 +280,3 @@ th:nth-child(4), td:nth-child(4) { width: 8%; }
         display: block;
     }
 }
-
-/* アコーディオン展開時の表示 */
-.card-detail.open {
-    display: block;
-}
-
-/* 矢印の見た目改善（オプション） */
-.accordion-card::after {
-    content: "▼";
-    float: right;
-    transition: transform 0.3s;
-}
-
-.accordion-card.open::after {
-    transform: rotate(180deg); /* 上向き矢印 */
-}
-
