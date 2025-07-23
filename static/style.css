@@ -175,6 +175,19 @@ th:nth-child(4), td:nth-child(4) { width: 8%; }
     overflow: hidden;
 }
 
+.accordion-card {
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.accordion-card:hover {
+  background-color: #f5f5f5;
+}
+.card-detail {
+  display: none;
+  margin-top: 0.5em;
+  color: #555;
+}
+
 /* ---------- メディアクエリ ---------- */
 @media (max-width: 600px) {
     body {
