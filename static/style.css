@@ -31,16 +31,16 @@ input[type="range"] {
 
 button {
     padding: 0.6rem 1.2rem;
-    background-color: #a0a0a0;
-    color: white;
-    border: none;
+    background-color: #e0e0e0; /* 薄いグレー */
+    color: #000000;           /* 黒文字 */
+    border: 1px solid #ccc;   /* 輪郭を少しつける */
     border-radius: 4px;
     cursor: pointer;
     align-self: center;
 }
 
 button:hover {
-    background-color: #696969;
+    background-color: #cfcfcf; /* ホバー時は少し濃く */
 }
 
 #more-section {
