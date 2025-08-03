@@ -31,7 +31,7 @@ input[type="range"] {
 
 button {
     padding: 0.6rem 1.2rem;
-    background-color: #fafafa; /* 薄いグレー */
+    background-color: #f0f0f0; /* 薄いグレー */
     color: #000000;           /* 黒文字 */
     border: 1px solid #ccc;   /* 輪郭を少しつける */
     border-radius: 4px;
