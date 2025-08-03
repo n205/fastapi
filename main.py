@@ -91,6 +91,11 @@ async def index(request: Request):
         'request': request,
         'user_region': location.get('region', '不明')
     })
+    
+@app.get("/full", response_class=HTMLResponse)
+async def full(request: Request):
+    return templates.TemplateResponse("desc_answer.html", {"request": request})
+
 
 @app.get("/api/rank", response_class=HTMLResponse)
 async def rank(q1: int = 4, q2: int = 4, q3: int = 4):
