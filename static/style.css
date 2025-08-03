@@ -43,6 +43,12 @@ button:hover {
     background-color: #45a049;
 }
 
+#more-section {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
 .table-wrapper {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
