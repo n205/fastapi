@@ -92,8 +92,8 @@ async def index(request: Request):
         'user_region': location.get('region', '不明')
     })
     
-@app.get("/full", response_class=HTMLResponse)
-async def full(request: Request):
+@app.get("/desc_answer", response_class=HTMLResponse)
+async def desc_answer(request: Request):
     return templates.TemplateResponse("desc_answer.html", {"request": request})
 
 
