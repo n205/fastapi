@@ -46,6 +46,11 @@
     </div>
   </form>
 
+  <!-- もっと見るボタン -->
+  <div id="more-section">
+    <button id="more-button">もっと見る</button>
+  </div>
+
   <script>
     const form = document.getElementById('preference-form');
     const tableView = document.getElementById('table-view');
@@ -132,6 +137,11 @@
     form.querySelectorAll('input[type="range"]').forEach(input => {
       input.addEventListener('input', fetchRanking);
     });
+
+    document.getElementById('more-button').addEventListener('click', () => {
+      window.location.href = '/full';  // FastAPI側のルートに遷移
+    });
+    
   </script>
 </body>
 </html>
