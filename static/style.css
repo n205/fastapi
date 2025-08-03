@@ -46,7 +46,7 @@ button:hover {
 #more-section {
     display: flex;
     justify-content: center;
-    margin-top: 2rem;
+    margin-top: 1rem;
 }
 
 .table-wrapper {
