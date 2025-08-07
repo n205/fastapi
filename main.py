@@ -16,7 +16,6 @@ app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
-# IPキャッシュ
 ip_cache = {}
 
 async def get_location_from_ip(ip: str):
@@ -39,18 +38,16 @@ async def get_location_from_ip(ip: str):
     except Exception as e:
         return {'ip': ip, 'error': str(e)}
 
-# 質問と軸の定義
 PVQ_QUESTIONS = [
-    {"text": "この会社は、自分で考え、自分のやり方で仕事を進めることを重視している", "axis": "PVQ_自己方向性"},
-    {"text": "この会社は、運営が安定していて、予測できる状況を重視している", "axis": "PVQ_安全"},
-    {"text": "この会社は、多様性や公平さ、人権などを重視している", "axis": "PVQ_普遍主義"},
-    {"text": "この会社は、新しい挑戦や変化を求めることを重視している", "axis": "PVQ_刺激"},
-    {"text": "この会社は、権力や地位、名声を得ることを重視している", "axis": "PVQ_権力"},
-    {"text": "この会社は、成功や達成、優秀さを重視している", "axis": "PVQ_達成"},
-    {"text": "この会社は、快楽や楽しさ、幸福感を重視している", "axis": "PVQ_快楽"},
+    {"text": "自分で考え、自分のやり方で仕事を進めることを重視している", "axis": "PVQ_自己方向性"},
+    {"text": "運営が安定していて、予測できる状況を重視している", "axis": "PVQ_安全"},
+    {"text": "多様性や公平さ、人権などを重視している", "axis": "PVQ_普遍主義"},
+    {"text": "新しい挑戦や変化を求めることを重視している", "axis": "PVQ_刺激"},
+    {"text": "権力や地位、名声を得ることを重視している", "axis": "PVQ_権力"},
+    {"text": "成功や達成、優秀さを重視している", "axis": "PVQ_達成"},
+    {"text": "快楽や楽しさ、幸福感を重視している", "axis": "PVQ_快楽"},
 ]
 
-# スプレッドシートから企業データを取得
 def load_company_data():
     SPREADSHEET_ID = '18Sb4CcAE5JPFeufHG97tLZz9Uj_TvSGklVQQhoFF28w'
     WORKSHEET_NAME = 'バリュー抽出'
@@ -90,26 +87,25 @@ def load_company_data():
         logging.error('❌ スプレッドシート読み込み失敗:', exc_info=True)
         return pd.DataFrame()
 
-# トップページ表示（質問をランダム化）
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
     forwarded_for = request.headers.get('x-forwarded-for', '')
     ip = forwarded_for.split(',')[0] if forwarded_for else request.client.host
     location = await get_location_from_ip(ip)
 
+    # --- ✅ ランダムに3つの質問を選出 ---
     selected_questions = random.sample(PVQ_QUESTIONS, 3)
 
     return templates.TemplateResponse("index.html", {
         'request': request,
         'user_region': location.get('region', '不明'),
-        'questions': selected_questions
+        'questions': selected_questions  # ✅ テンプレートに渡す
     })
 
 @app.get("/desc_answer", response_class=HTMLResponse)
 async def desc_answer(request: Request):
     return templates.TemplateResponse("desc_answer.html", {"request": request})
 
-# スコア計算（ランダム質問軸に対応）
 @app.post("/api/rank", response_class=HTMLResponse)
 async def rank(
     axis1: str = Form(...), q1: int = Form(...),
@@ -126,7 +122,6 @@ async def rank(
     if df.empty:
         return HTMLResponse('<p>データ取得に失敗しました</p>', status_code=500)
 
-    # スコア計算（ユーザーの指定軸だけを比較）
     def compute_score(row):
         score = 0
         for axis, val in user_vector.items():
@@ -137,7 +132,6 @@ async def rank(
     df['スコア'] = df.apply(compute_score, axis=1)
     df = df.sort_values('スコア', ascending=False).head(3)
 
-    # --- テーブルビュー HTML ---
     table_html = '<div id="table-view" class="table-wrapper"><table>'
     table_html += (
         '<thead><tr>'
@@ -160,7 +154,6 @@ async def rank(
         )
     table_html += '</tbody></table></div>'
 
-    # --- カードビュー HTML ---
     card_html = '<div id="card-view">'
     for _, row in df.iterrows():
         name_link = f"<a href='{row['URL']}' target='_blank'>{row['会社名']}</a>"
