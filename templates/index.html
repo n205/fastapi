@@ -68,6 +68,11 @@
     async function fetchRanking() {
       const formData = new FormData(form);
     
+      // ▼ 質問の軸（axis）をフォームデータに追加
+      questionOrder.forEach((q, i) => {
+        formData.append(`axis${i + 1}`, q.axis);
+      });
+    
       try {
         const res = await fetch('/api/rank', {
           method: 'POST',
@@ -91,7 +96,7 @@
         tableView.innerHTML = "<p>データ取得に失敗しました。</p>";
         cardView.innerHTML = "";
       }
-    }
+}
 
     function generateCardsFromTable() {
       const table = document.querySelector("#table-view table");
