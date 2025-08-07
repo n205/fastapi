@@ -1,52 +1,22 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>価値観マッチング</title>
-  <link rel="stylesheet" href="/static/style.css">
+  <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
   <h1>🧭 価値観マッチング：あなたに合う会社は？</h1>
   <h2>🧩 あなたに合いそうな会社ランキング（簡易）</h2>
 
-  <!-- PC表示用テーブル -->
   <div id="table-view"></div>
-
-  <!-- スマホ表示用カード -->
   <div id="card-view" style="display: none;"></div>
 
   <h4>以下の会社がどのくらい自分と似ているか、各項目ごとに回答してください</h4>
-  <form id="preference-form">
-    <div class="question-block">
-      <label>この会社は、自分で考え、自分のやり方で仕事を進めることを重視している</label>
-      <div class="slider-container">
-        <span class="slider-label">あまり似ていない</span>
-        <input type="range" name="q1" min="1" max="7" value="4">
-        <span class="slider-label">とても似ている</span>
-      </div>
-    </div>
 
-    <div class="question-block">
-      <label>この会社は、運営が安定していることや、状況が予測可能であることを重視している</label>
-      <div class="slider-container">
-        <span class="slider-label">あまり似ていない</span>
-        <input type="range" name="q2" min="1" max="7" value="4">
-        <span class="slider-label">とても似ている</span>
-      </div>
-    </div>
+  <form id="preference-form"></form>
 
-    <div class="question-block">
-      <label>この会社は、多様性、環境、人権、公平さなどを重視している</label>
-      <div class="slider-container">
-        <span class="slider-label">あまり似ていない</span>
-        <input type="range" name="q3" min="1" max="7" value="4">
-        <span class="slider-label">とても似ている</span>
-      </div>
-    </div>
-  </form>
-
-  <!-- もっと見るボタン -->
   <div id="more-section">
     <button id="more-button">もっと見る</button>
   </div>
@@ -56,8 +26,43 @@
     const tableView = document.getElementById('table-view');
     const cardView = document.getElementById('card-view');
 
+    let questionOrder = []; // ランダムな順番
+
     function isMobile() {
       return window.innerWidth <= 768;
+    }
+
+    async function fetchQuestionsAndRenderForm() {
+      try {
+        const res = await fetch('/api/questions');
+        const data = await res.json();
+        questionOrder = data.questions;
+
+        form.innerHTML = '';
+
+        questionOrder.forEach((q, i) => {
+          const block = document.createElement('div');
+          block.className = 'question-block';
+          block.innerHTML = `
+            <label>${q.text}</label>
+            <div class="slider-container">
+              <span class="slider-label">あまり似ていない</span>
+              <input type="range" name="q${i + 1}" min="1" max="7" value="4">
+              <span class="slider-label">とても似ている</span>
+            </div>
+          `;
+          form.appendChild(block);
+        });
+
+        form.querySelectorAll('input[type="range"]').forEach(input => {
+          input.addEventListener('input', fetchRanking);
+        });
+
+        fetchRanking(); // 初回ランキング
+      } catch (e) {
+        console.error('❌ 質問の取得に失敗:', e);
+        form.innerHTML = '<p>質問の取得に失敗しました。</p>';
+      }
     }
 
     async function fetchRanking() {
@@ -100,7 +105,7 @@
         if (cells.length < 4) return;
 
         const name = cells[0].innerHTML;
-        const colorHTML = cells[1].innerHTML; // 色HTMLをそのまま使う
+        const colorHTML = cells[1].innerHTML;
         const value = cells[2].innerText;
         const score = cells[3].innerText;
 
@@ -111,7 +116,7 @@
             <div class="accordion-header" onclick="toggleAccordion(${index})">
               <div class="accordion-header-top">
                 <h3>${name}</h3>
-                <div class="color-block-wrapper">${colorHTML}</div> <!-- ✅ 色を明示的にラップ -->
+                <div class="color-block-wrapper">${colorHTML}</div>
               </div>
             </div>
             <div class="accordion-body card-detail" id="${cardId}">
@@ -132,16 +137,11 @@
       detail.classList.toggle('open');
     }
 
-    window.onload = fetchRanking;
-
-    form.querySelectorAll('input[type="range"]').forEach(input => {
-      input.addEventListener('input', fetchRanking);
-    });
-
     document.getElementById('more-button').addEventListener('click', () => {
-      window.location.href = '/desc_answer';  // FastAPI側のルートに遷移
+      window.location.href = '/desc_answer';
     });
-    
+
+    window.onload = fetchQuestionsAndRenderForm;
   </script>
 </body>
 </html>
