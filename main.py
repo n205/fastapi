@@ -102,6 +102,11 @@ async def index(request: Request):
         'questions': selected_questions  # ✅ テンプレートに渡す
     })
 
+@app.get("/api/questions")
+async def get_random_questions():
+    selected_questions = random.sample(PVQ_QUESTIONS, 3)
+    return JSONResponse(content={"questions": selected_questions})
+
 @app.get("/desc_answer", response_class=HTMLResponse)
 async def desc_answer(request: Request):
     return templates.TemplateResponse("desc_answer.html", {"request": request})
