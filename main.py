@@ -11,6 +11,16 @@ from google.oauth2 import service_account
 from gspread_dataframe import get_as_dataframe
 import logging
 
+PVQ_QUESTIONS = [
+    {"text": "自分で考え、自分のやり方で仕事を進めることを重視している", "axis": "PVQ_自己方向性"},
+    {"text": "運営が安定していて、予測できる状況を重視している", "axis": "PVQ_安全"},
+    {"text": "多様性や公平さ、人権などを重視している", "axis": "PVQ_普遍主義"},
+    {"text": "新しい挑戦や変化を求めることを重視している", "axis": "PVQ_刺激"},
+    {"text": "権力や地位、名声を得ることを重視している", "axis": "PVQ_権力"},
+    {"text": "成功や達成、優秀さを重視している", "axis": "PVQ_達成"},
+    {"text": "快楽や楽しさ、幸福感を重視している", "axis": "PVQ_快楽"},
+]
+
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
