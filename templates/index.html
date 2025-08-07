@@ -67,14 +67,17 @@
 
     async function fetchRanking() {
       const formData = new FormData(form);
-      const query = new URLSearchParams(formData).toString();
-
+    
       try {
-        const res = await fetch(`/api/rank?${query}`);
+        const res = await fetch('/api/rank', {
+          method: 'POST',
+          body: formData
+        });
+    
         const htmlData = await res.text();
-
+    
         tableView.innerHTML = htmlData;
-
+    
         if (isMobile()) {
           generateCardsFromTable();
           tableView.style.display = "none";
