@@ -34,7 +34,7 @@
 
     async function fetchQuestionsAndRenderForm() {
       try {
-        const res = await fetch('/api/questions');
+        const res = await fetch('/api/questions?count=3');
         const data = await res.json();
         questionOrder = data.questions;
 
