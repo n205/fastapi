@@ -146,6 +146,15 @@
     }
 
     document.getElementById('more-button').addEventListener('click', () => {
+      const answers = {};
+      form.querySelectorAll('input[type="range"]').forEach((input, i) => {
+        answers[`q${i + 1}`] = input.value;
+        answers[`axis${i + 1}`] = questionOrder[i].axis;
+      });
+      
+      localStorage.setItem("preAnswers", JSON.stringify(answers));
+      
+      // 遷移
       window.location.href = '/desc_answer';
     });
 
