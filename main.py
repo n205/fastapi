@@ -1,5 +1,5 @@
-from fastapi import FastAPI, Request, Form
-from fastapi.responses import HTMLResponse, JSONResponse 
+from fastapi import FastAPI, Request, Form, Query
+from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import httpx
@@ -93,18 +93,25 @@ async def index(request: Request):
     ip = forwarded_for.split(',')[0] if forwarded_for else request.client.host
     location = await get_location_from_ip(ip)
 
-    # --- ✅ ランダムに3つの質問を選出 ---
+    # ✅ トップページではランダム3問だけ
     selected_questions = random.sample(PVQ_QUESTIONS, 3)
 
     return templates.TemplateResponse("index.html", {
         'request': request,
         'user_region': location.get('region', '不明'),
-        'questions': selected_questions  # ✅ テンプレートに渡す
+        'questions': selected_questions
     })
 
 @app.get("/api/questions")
-async def get_random_questions():
-    selected_questions = random.sample(PVQ_QUESTIONS, 3)
+async def get_questions(count: int = Query(None)):
+    """
+    count 指定があればランダムにその件数だけ返す。
+    指定がなければ全件返す。
+    """
+    if count is not None and count > 0:
+        selected_questions = random.sample(PVQ_QUESTIONS, min(count, len(PVQ_QUESTIONS)))
+    else:
+        selected_questions = PVQ_QUESTIONS
     return JSONResponse(content={"questions": selected_questions})
 
 @app.get("/desc_answer", response_class=HTMLResponse)
