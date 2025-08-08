@@ -16,13 +16,64 @@
       表面的な条件だけでなく、企業が持つ思想や文化との共鳴を大切にすることで、  
       あなたが心から納得できる選択をサポートします。
     </p>
+    <p><a href="/">← イメージをつかみたい場合はこちら</a></p>
   </section>
 
   <section id="full-matching">
     <h2>本実施版マッチング</h2>
-    <p>ここに詳細な設問やランキングを表示（後ほど拡張）</p>
+    <form id="full-form"></form>
+    <div id="result"></div>
   </section>
-
-  <p><a href="/">← イメージをつかみたい場合はこちら</a></p>
+  
+  <script>
+  async function loadFullQuestions() {
+    const res = await fetch('/api/questions'); // 全7問
+    const data = await res.json();
+    const allQuestions = data.questions;
+  
+    const saved = localStorage.getItem("preAnswers");
+    const preAnswers = saved ? JSON.parse(saved) : {};
+  
+    const form = document.getElementById("full-form");
+    form.innerHTML = '';
+  
+    allQuestions.forEach((q, i) => {
+      const block = document.createElement('div');
+      block.innerHTML = `
+        <label>${q.text}</label>
+        <input type="range" name="q${i + 1}" min="1" max="7" value="${preAnswers[`q${i + 1}`] || 4}">
+      `;
+      form.appendChild(block);
+    });
+  
+    // 回答変化でランキング再計算
+    form.addEventListener('input', updateRanking);
+  
+    // 初回表示
+    updateRanking();
+  }
+  
+  async function updateRanking() {
+    const form = document.getElementById("full-form");
+    const formData = new FormData(form);
+  
+    // 軸も送る
+    const resQ = await fetch('/api/questions');
+    const dataQ = await resQ.json();
+    dataQ.questions.forEach((q, i) => {
+      formData.append(`axis${i + 1}`, q.axis);
+    });
+  
+    const res = await fetch('/api/rank', {
+      method: 'POST',
+      body: formData
+    });
+  
+    document.getElementById("result").innerHTML = await res.text();
+  }
+  
+  window.onload = loadFullQuestions;
+  </script>
+  
 </body>
 </html>
