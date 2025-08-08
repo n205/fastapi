@@ -39,9 +39,14 @@
   
     allQuestions.forEach((q, i) => {
       const block = document.createElement('div');
+      block.className = 'question-block';
       block.innerHTML = `
         <label>${q.text}</label>
-        <input type="range" name="q${i + 1}" min="1" max="7" value="${preAnswers[`q${i + 1}`] || 4}">
+        <div class="slider-container">
+          <span class="slider-label">あまり似ていない</span>
+          <input type="range" name="q${i + 1}" min="1" max="7" value="${preAnswers[`q${i + 1}`] || 4}">
+          <span class="slider-label">とても似ている</span>
+        </div>
       `;
       form.appendChild(block);
     });
