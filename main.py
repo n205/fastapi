@@ -18,7 +18,7 @@ app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
-stripe.api_key = os.getenv('STRIPE_SECRET_KEY')
+stripe_api_key = os.getenv('STRIPE_SECRET_KEY')
 webhook_secret = os.getenv('STRIPE_WEBHOOK_SECRET')
 
 if not stripe_api_key or not stripe_webhook_secret:
