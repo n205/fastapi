@@ -22,7 +22,13 @@
   <section id="full-matching">
     <h2>本実施版マッチング</h2>
     <form id="full-form"></form>
-    <div id="result"></div>
+
+    <div id="purchase">
+      <p>回答が完了すると、価値観レポート（PDF）を購入できます。</p>
+      <a href="https://buy.stripe.com/28E4gzevx5YV2Lv1VeeZ201" target="_blank">
+        <button type="button">📄 500円でレポートを購入する</button>
+      </a>
+    </div>
   </section>
   
   <script>
@@ -30,13 +36,13 @@
     const res = await fetch('/api/questions'); // 全7問
     const data = await res.json();
     const allQuestions = data.questions;
-  
+
     const saved = localStorage.getItem("preAnswers");
     const preAnswers = saved ? JSON.parse(saved) : {};
-  
+
     const form = document.getElementById("full-form");
     form.innerHTML = '';
-  
+
     allQuestions.forEach((q, i) => {
       const block = document.createElement('div');
       block.className = 'question-block';
@@ -50,35 +56,9 @@
       `;
       form.appendChild(block);
     });
-  
-    // 回答変化でランキング再計算
-    form.addEventListener('input', updateRanking);
-  
-    // 初回表示
-    updateRanking();
   }
-  
-  async function updateRanking() {
-    const form = document.getElementById("full-form");
-    const formData = new FormData(form);
-  
-    // 軸も送る
-    const resQ = await fetch('/api/questions');
-    const dataQ = await resQ.json();
-    dataQ.questions.forEach((q, i) => {
-      formData.append(`axis${i + 1}`, q.axis);
-    });
-  
-    const res = await fetch('/api/rank', {
-      method: 'POST',
-      body: formData
-    });
-  
-    document.getElementById("result").innerHTML = await res.text();
-  }
-  
+
   window.onload = loadFullQuestions;
   </script>
-  
 </body>
 </html>
