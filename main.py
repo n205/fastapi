@@ -190,6 +190,26 @@ async def rank(
 
     return HTMLResponse(table_html + card_html)
 
+@app.post('/stripe/webhook')
+async def stripe_webhook(request: Request):
+    payload = await request.body()
+    sig_header = request.headers.get('Stripe-Signature')
+
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, webhook_secret
+        )
+    except stripe.error.SignatureVerificationError:
+        raise HTTPException(status_code=400, detail='Invalid signature')
+
+    # ここでイベント処理
+    if event['type'] == 'checkout.session.completed':
+        session = event['data']['object']
+        # 支払い成功後の処理
+        print('Payment succeeded:', session)
+
+    return {'status': 'success'}
+
 if __name__ == '__main__':
     import uvicorn
     uvicorn.run(app, host='0.0.0.0', port=8080)
