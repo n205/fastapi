@@ -201,16 +201,15 @@ async def stripe_webhook(request: Request):
     sig_header = request.headers.get('Stripe-Signature')
 
     try:
-        event = stripe.Webhook.construct_event(
-            payload, sig_header, webhook_secret
-        )
+        event = stripe.Webhook.construct_event(payload, sig_header, webhook_secret)
+    except ValueError:
+        raise HTTPException(status_code=400, detail='Invalid payload')
     except stripe.error.SignatureVerificationError:
         raise HTTPException(status_code=400, detail='Invalid signature')
 
-    # ここでイベント処理
     if event['type'] == 'checkout.session.completed':
         session = event['data']['object']
-        # 支払い成功後の処理
+        # 支払い成功後の処理（例：DB保存やメール送信など）
         print('Payment succeeded:', session)
 
     return {'status': 'success'}
