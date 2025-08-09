@@ -14,3 +14,6 @@ gspread-dataframe
 google-auth
 
 python-multipart
+
+stripe==10.7.0
+
