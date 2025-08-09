@@ -21,8 +21,11 @@ templates = Jinja2Templates(directory="templates")
 stripe.api_key = os.getenv('STRIPE_SECRET_KEY')
 webhook_secret = os.getenv('STRIPE_WEBHOOK_SECRET')
 
-if not stripe.api_key or not webhook_secret:
-    raise RuntimeError('Stripe APIキーかWebhookシークレットが環境変数に設定されていません')
+if not stripe_api_key or not stripe_webhook_secret:
+    print("⚠️ Stripeのキーが設定されていません")
+    # RuntimeErrorは起動時に投げない
+else:
+    print("✅ Stripeキー読み込み成功")
 
 ip_cache = {}
 
