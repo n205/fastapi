@@ -198,6 +198,29 @@ async def rank(
 
     return HTMLResponse(table_html + card_html)
 
+@app.post("/create-checkout-session")
+async def create_checkout_session():
+    try:
+        checkout_session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[{
+                'price_data': {
+                    'currency': 'jpy',
+                    'product_data': {
+                        'name': '診断結果ページアクセス'
+                    },
+                    'unit_amount': 1000,  # 金額(例: 1000円)
+                },
+                'quantity': 1,
+            }],
+            mode='payment',
+            success_url='https://あなたのドメイン/success',
+            cancel_url='https://あなたのドメイン/cancel',
+        )
+        return JSONResponse(content={'id': checkout_session.id})
+    except Exception as e:
+        return JSONResponse(content={'error': str(e)}, status_code=400)
+
 @app.post('/stripe/webhook')
 async def stripe_webhook(request: Request):
     payload = await request.body()
