@@ -19,7 +19,9 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
 stripe_api_key = os.getenv('STRIPE_SECRET_KEY')
+print(stripe_api_key)
 stripe_webhook_secret = os.getenv('STRIPE_WEBHOOK_SECRET')
+print(stripe_webhook_secret)
 
 if not stripe_api_key or not stripe_webhook_secret:
     print("⚠️ Stripeのキーが設定されていません")
