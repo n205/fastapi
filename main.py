@@ -19,7 +19,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
 stripe_api_key = os.getenv('STRIPE_SECRET_KEY')
-webhook_secret = os.getenv('STRIPE_WEBHOOK_SECRET')
+stripe_webhook_secret = os.getenv('STRIPE_WEBHOOK_SECRET')
 
 if not stripe_api_key or not stripe_webhook_secret:
     print("⚠️ Stripeのキーが設定されていません")
@@ -204,7 +204,7 @@ async def stripe_webhook(request: Request):
     sig_header = request.headers.get('Stripe-Signature')
 
     try:
-        event = stripe.Webhook.construct_event(payload, sig_header, webhook_secret)
+        event = stripe.Webhook.construct_event(payload, sig_header, stripe_webhook_secret)
     except ValueError:
         raise HTTPException(status_code=400, detail='Invalid payload')
     except stripe.error.SignatureVerificationError:
