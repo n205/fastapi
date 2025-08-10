@@ -217,7 +217,7 @@ async def create_checkout_session():
                     'product_data': {
                         'name': '診断結果ページアクセス'
                     },
-                    'unit_amount': 1000,  # 金額(例: 1000円)
+                    'unit_amount': 0,  # 金額(例: 1000円)
                 },
                 'quantity': 1,
             }],
