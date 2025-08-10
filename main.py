@@ -26,6 +26,7 @@ if not stripe_api_key or not stripe_webhook_secret:
     # RuntimeErrorは起動時に投げない
 else:
     print("✅ Stripeキー読み込み成功")
+    stripe.api_key = stripe_api_key
 
 ip_cache = {}
 
