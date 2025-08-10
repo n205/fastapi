@@ -241,6 +241,14 @@ async def stripe_webhook(request: Request):
 
     return {'status': 'success'}
 
+@app.get("/success")
+async def success(request: Request):
+    return templates.TemplateResponse("success.html", {"request": request})
+
+@app.get("/cancel")
+async def cancel(request: Request):
+    return templates.TemplateResponse("cancel.html", {"request": request})
+
 if __name__ == '__main__':
     import uvicorn
     uvicorn.run(app, host='0.0.0.0', port=8080)
