@@ -215,8 +215,8 @@ async def create_checkout_session():
                 'quantity': 1,
             }],
             mode='payment',
-            success_url='https://fastapi-232873166322.asia-northeast1.run.app/success',
-            cancel_url='https://fastapi-232873166322.asia-northeast1.run.app/cancel',
+            success_url='https://fastapi-232873166322.asia-northeast1.run.app',
+            cancel_url='https://fastapi-232873166322.asia-northeast1.run.app',
         )
         return JSONResponse(content={'id': checkout_session.id})
     except Exception as e:
