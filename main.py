@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request, Form, Query, HTTPException
+from fastapi import FastAPI, Request, Form, Query, HTTPException, BackgroundTasks
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -13,6 +13,13 @@ from google.oauth2 import service_account
 from gspread_dataframe import get_as_dataframe
 import logging
 import random
+
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.application import MIMEApplication
+from reportlab.pdfgen import canvas
+from io import BytesIO
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
