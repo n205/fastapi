@@ -248,6 +248,42 @@ async def stripe_webhook(request: Request):
 
     return {'status': 'success'}
 
+# PDF生成関数
+def generate_pdf(content: str) -> bytes:
+    buffer = BytesIO()
+    p = canvas.Canvas(buffer)
+    p.drawString(100, 750, content)
+    p.showPage()
+    p.save()
+    buffer.seek(0)
+    return buffer.read()
+
+# メール送信関数
+def send_email_with_pdf(to_email: str, subject: str, body: str, pdf_bytes: bytes, filename: str):
+    from_email = os.getenv("SMTP_FROM")
+    password = os.getenv("SMTP_PASSWORD")
+    smtp_server = os.getenv("SMTP_SERVER", "smtp.gmail.com")
+    smtp_port = int(os.getenv("SMTP_PORT", 587))
+
+    # メール作成
+    msg = MIMEMultipart()
+    msg["From"] = from_email
+    msg["To"] = to_email
+    msg["Subject"] = subject
+
+    msg.attach(MIMEText(body, "plain"))
+
+    # PDF添付
+    part = MIMEApplication(pdf_bytes, Name=filename)
+    part["Content-Disposition"] = f'attachment; filename="{filename}"'
+    msg.attach(part)
+
+    # SMTP送信
+    with smtplib.SMTP(smtp_server, smtp_port) as server:
+        server.starttls()
+        server.login(from_email, password)
+        server.send_message(msg)
+        
 @app.get("/success")
 async def success(request: Request):
     return templates.TemplateResponse("success.html", {"request": request})
