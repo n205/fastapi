@@ -229,24 +229,36 @@ async def create_checkout_session():
     except Exception as e:
         return JSONResponse(content={'error': str(e)}, status_code=400)
 
-@app.post('/stripe/webhook')
-async def stripe_webhook(request: Request):
+@app.post("/stripe/webhook")
+async def stripe_webhook(request: Request, background_tasks: BackgroundTasks):
     payload = await request.body()
-    sig_header = request.headers.get('Stripe-Signature')
+    sig_header = request.headers.get("stripe-signature")
 
     try:
-        event = stripe.Webhook.construct_event(payload, sig_header, stripe_webhook_secret)
-    except ValueError:
-        raise HTTPException(status_code=400, detail='Invalid payload')
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, stripe_webhook_secret
+        )
     except stripe.error.SignatureVerificationError:
-        raise HTTPException(status_code=400, detail='Invalid signature')
+        return JSONResponse(status_code=400, content={"error": "Invalid signature"})
 
-    if event['type'] == 'checkout.session.completed':
-        session = event['data']['object']
-        # 支払い成功後の処理（例：DB保存やメール送信など）
-        print('Payment succeeded:', session)
+    if event["type"] == "checkout.session.completed":
+        session = event["data"]["object"]
 
-    return {'status': 'success'}
+        # ユーザーのメールアドレスを取得
+        customer_email = session.get("customer_details", {}).get("email")
+        if customer_email:
+            # PDF生成 & メール送信をバックグラウンドで実行
+            pdf_bytes = generate_pdf("ご購入ありがとうございました。こちらがレポートです。")
+            background_tasks.add_task(
+                send_email_with_pdf,
+                to_email=customer_email,
+                subject="ご購入レポート",
+                body="ご購入いただきありがとうございます。PDFレポートを添付いたします。",
+                pdf_bytes=pdf_bytes,
+                filename="report.pdf"
+            )
+
+    return JSONResponse(status_code=200, content={"status": "success"})
 
 # PDF生成関数
 def generate_pdf(content: str) -> bytes:
