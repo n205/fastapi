@@ -218,7 +218,7 @@ async def create_checkout_session():
             success_url='https://fastapi-232873166322.asia-northeast1.run.app',
             cancel_url='https://fastapi-232873166322.asia-northeast1.run.app',
         )
-        return JSONResponse(content={'id': checkout_session.id})
+        return JSONResponse(content={'url': checkout_session.url})
     except Exception as e:
         return JSONResponse(content={'error': str(e)}, status_code=400)
 
